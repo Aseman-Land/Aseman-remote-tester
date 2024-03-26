@@ -1,0 +1,20 @@
+{
+    "instances": [
+        {
+            "type": "client",
+            "port": 3471,
+            "host": "192.168.0.99",
+            "tests": [
+                {
+                    "key": "simple-tcp-test",
+                    "root": "/home/bardia/Projects/build/simple-tcp-test/Desktop-Debug/test/",
+                    "command": "/home/bardia/Projects/build/simple-tcp-test/Desktop-Debug/test/simple-tcp-test",
+                    "begin-key": "0dce8a0a-4b50-443b-9939-4171de0a549f",
+                    "end-key": "06f2d28f-84dc-4ccb-9ac9-e5e7969d76a0",
+                    "start-at-begin": true,
+                    "arguments": ["192.168.0.99"]
+                }
+            ]
+        }
+    ]
+}
