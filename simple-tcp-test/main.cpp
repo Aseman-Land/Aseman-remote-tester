@@ -3,6 +3,7 @@
 #include <QTcpServer>
 #include <QFile>
 #include <QDateTime>
+#include <QtMath>
 
 #define LISTEN_PORT 6753
 
@@ -12,6 +13,9 @@ int main(int argc, char *argv[])
 
     auto startTime = QDateTime::currentDateTime();
     qint64 readedSize = 0;
+
+    constexpr auto size_mb = 128;
+    constexpr auto payload = 1024*1024;
 
     const auto args = app.arguments();
     if (args.contains("--server"))
@@ -27,8 +31,6 @@ int main(int argc, char *argv[])
             QFile f("/dev/zero");
             f.open(QFile::ReadOnly);
 
-            constexpr auto size_mb = 1024;
-            constexpr auto payload = 1024*1024;
             qint64 totalWrittern = 0;
             for (int i=0; i<size_mb; i++)
                 totalWrittern += s->write(f.read(payload));
@@ -48,9 +50,11 @@ int main(int argc, char *argv[])
             const auto data = socket->readAll();
             readedSize += data.size();
 
+            const auto ms = startTime.msecsTo(QDateTime::currentDateTime());
             qDebug() << "Finished:" << socket->peerAddress() << socket->peerPort();
-            qDebug() << "Duration:" << startTime.msecsTo(QDateTime::currentDateTime()) << "ms";
+            qDebug() << "Duration:" << ms << "ms";
             qDebug() << "Size:" << readedSize << "bytes";
+            qDebug() << "speed:" << (ms? qFloor(10*(readedSize/payload)/(ms/1000))/10 : ms) << "mb/s";
             qApp->exit();
         });
         socket->connect(socket, &QTcpSocket::readyRead, [&readedSize, socket](){
